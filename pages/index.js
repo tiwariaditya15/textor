@@ -1,6 +1,8 @@
 import { useState } from "react";
-import Editor from "react-quill";
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+
+const Editor = dynamic(() => import("react-quill"));
 export default function Home() {
   const [value, setValue] = useState("");
   console.log({ value });
