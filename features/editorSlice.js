@@ -17,6 +17,12 @@ const editorSlice = createSlice({
         state.value = action.payload.note;
       }
     );
+    builder.addMatcher(
+      editorApi.endpoints.addNote.matchFulfilled,
+      (state, action) => {
+        state.value = action.payload.note;
+      }
+    );
   },
 });
 

@@ -10,7 +10,14 @@ export const editorApi = createApi({
     getNote: builder.query({
       query: () => "notes",
     }),
+    addNote: builder.mutation({
+      query: (newDraft) => ({
+        url: "notes",
+        method: "POST",
+        body: { newDraft },
+      }),
+    }),
   }),
 });
 
-export const { useGetNoteQuery } = editorApi;
+export const { useGetNoteQuery, useAddNoteMutation } = editorApi;
