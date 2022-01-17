@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react";
 import _ from "lodash";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
@@ -5,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { setValue as setEditorState } from "../features/editorSlice";
 import { useSelector } from "react-redux";
 import { useGetNoteQuery, useAddNoteMutation } from "../app/services/editorApi";
-import { useEffect } from "react";
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"],
@@ -41,8 +41,12 @@ export default function Home() {
   const dispatch = useDispatch();
   useGetNoteQuery();
   const [addNote, { isLoading, isSuccess, isError }] = useAddNoteMutation();
-  console.log({ Editor });
-
+  const uploadImage = useCallback(function uploadImage() {
+    const url = prompt("Enter URL");
+    const cursorPosition = this.quill.getSelection().index;
+    this.quill.insertEmbed(cursorPosition, "image", url);
+    this.quill.setSelection(cursorPosition + 2);
+  }, []);
   return (
     <>
       <section style={{}}>
@@ -50,24 +54,25 @@ export default function Home() {
           value={value}
           theme={"snow"}
           modules={{
-            toolbar: toolbarOptions,
+            toolbar: {
+              container: toolbarOptions,
+              handlers: {
+                image: uploadImage,
+              },
+            },
             clipboard: {
               matchVisuals: false,
             },
           }}
           onChange={(newState) => {
             dispatch(setEditorState(newState));
-            // _.debounce(async function () {
-            //   console.log("debounced");
-            //   await addNote(newState);
-            // }, 800);
           }}
           style={{ height: "20rem" }}
         />
       </section>
       <button
         style={{
-          marginTop: "4rem",
+          marginTop: "5rem",
           marginLeft: "0.4rem",
           padding: "1rem 1.5rem",
         }}
